@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
+import { Router } from 'react-router-dom'
 import { ApolloProvider } from 'react-apollo'
 import createHistory from 'history/createBrowserHistory'
 import { MuiThemeProvider } from 'material-ui/styles'
@@ -10,15 +10,17 @@ import registerServiceWorker from './registerServiceWorker'
 import theme from './styles/theme'
 
 
-const apolloClient = new Client()
+const apolloClient = new Client().client
 const history = createHistory()
+
+console.log(`Apollo client is ${JSON.stringify(apolloClient)}`)
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <ApolloProvider client={apolloClient} >
-      <BrowserRouter history={history} >
+      <Router history={history} >
         <App />
-      </BrowserRouter>
+      </Router>
     </ApolloProvider>
   </MuiThemeProvider>,
   document.getElementById('root')

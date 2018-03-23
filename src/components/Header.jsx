@@ -6,7 +6,7 @@ import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
-// import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const styles = {
   root: {
@@ -17,6 +17,10 @@ const styles = {
   },
   margin: {
     marginLeft: '30px'
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit'
   }
 }
 
@@ -32,7 +36,7 @@ const Header = (props) => {
         <Toolbar>
           <Typography variant='title' color='inherit' >Notetaker</Typography>
           <Typography variant='subheading' color='inherit' className={[classes.flex, classes.margin].join(' ')}>A Graphql Client Demo</Typography>
-          <Button color='inherit'>Login</Button>
+          <Link className={classes.link} to='/login' href='/login'><Button color='inherit'>Login</Button></Link>
           <Button color='inherit'>Github</Button>
         </Toolbar>
       </AppBar>

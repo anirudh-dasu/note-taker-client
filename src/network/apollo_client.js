@@ -3,11 +3,18 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { BatchHttpLink } from 'apollo-link-batch-http'
 
 export default class Client {
-  constructor(initialState) {
+  constructor() {
     this.apolloClient = new ApolloClient({
-      link: new BatchHttpLink({ url: 'http://localhost:3000/graphql', batchMax: 5, batchInterval: 5 }),
-      cache: new InMemoryCache().restore(initialState),
-      ssrForceFetchDelay: 100
+      link: new BatchHttpLink({
+        uri: 'http://localhost:4000/graphql',
+        batchMax: 5,
+        batchInterval: 5
+      }),
+      cache: new InMemoryCache()
     })
+  }
+
+  get client() {
+    return this.apolloClient
   }
 }

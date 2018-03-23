@@ -3,6 +3,7 @@
 
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
+import { compose, graphql } from 'react-apollo'
 import Typography from 'material-ui/Typography'
 import Grid from 'material-ui/Grid'
 import Paper from 'material-ui/Paper'
@@ -10,6 +11,7 @@ import Button from 'material-ui/Button'
 import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import signInMutation from '../graphql/signInMutation.graphql'
+import { getDeviceId, getDeviceType } from '../utils'
 
 const styles = theme => ({
   root: {
@@ -64,13 +66,10 @@ const validate = (values) => {
 class Login extends React.Component {
   constructor(props) {
     super(props)
-    this.setState({ email: '', password: '' })
+    this.state = { email: '', password: '' }
     const { classes } = props
+    console.log(`Props are ${JSON.stringify(props)}`)
     this.classes = classes
-  }
-
-  componentWillMount() {
-    this.setState({ email: '', password: '' })
   }
 
   handleChange = name => (event) => {
@@ -78,8 +77,19 @@ class Login extends React.Component {
   }
 
   handleSubmit = () => (event) => {
-    alert(`Submit called with email ${this.state.email} and password ${this.state.password}`)
+    // alert(`Submit called with email ${this.state.email} and password ${
+    //   this.state.password
+    // }`)
     event.preventDefault()
+    this.props.mutate({
+      variables: {
+        email: this.state.email, password: this.state.password, device_id: getDeviceId(), device_type: getDeviceType()
+      }
+    }).then(({ data }) => {
+      console.log(`Data is ${JSON.stringify(data)}`)
+    }).catch((error) => {
+      console.log(`Error is ${error}`)
+    })
   }
 
   render() {
@@ -88,8 +98,13 @@ class Login extends React.Component {
         <Grid container spacing={24}>
           <Grid item xs={6} className={this.classes.margin}>
             <Paper className={this.classes.paper}>
-              <Typography variant='title' color='inherit'>Login</Typography>
-              <form className={this.classes.container} onSubmit={this.handleSubmit()} >
+              <Typography variant='title' color='inherit'>
+                Login
+              </Typography>
+              <form
+                className={this.classes.container}
+                onSubmit={this.handleSubmit()}
+              >
                 <TextField
                   id='email'
                   name='email'
@@ -112,7 +127,12 @@ class Login extends React.Component {
                   onChange={this.handleChange('password')}
                   autoComplete='current-password'
                 />
-                <Button variant='raised' color='primary' type='Submit' className={this.classes.button}>
+                <Button
+                  variant='raised'
+                  color='primary'
+                  type='Submit'
+                  className={this.classes.button}
+                >
                   Login
                 </Button>
               </form>
@@ -124,10 +144,9 @@ class Login extends React.Component {
   }
 }
 
-
 Login.propTypes = {
   classes: PropTypes.object.isRequired
   // isLoggedIn: PropTypes.bool.isRequired
 }
 
-export default withStyles(styles)(Login)
+export default compose(withStyles(styles), graphql(signInMutation))(Login)

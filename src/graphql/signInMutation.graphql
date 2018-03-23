@@ -1,12 +1,13 @@
-mutation signIn($email: String, $password: String, $device_id: String, $device_type: String, $provider: String, $uid: String) {
-  signIn(input: { email: $email, password: $password, device_id: $device_id, device_type: $device_type, provider: $provider, uid: $uid }) {
+mutation signIn($email: String!, $password: String!, $device_id: String!, $device_type: String!, $provider: String, $uid: String) {
+  signIn(input: {sign_in:{ email: $email, password: $password, device_id: $device_id, device_type: $device_type, provider: $provider, uid: $uid }}) {
     user {
       id
       email
       created_at
       updated_at
       username
-      user_devices {
+    }
+    user_device {
         id
         device_id
         device_type
@@ -14,7 +15,6 @@ mutation signIn($email: String, $password: String, $device_id: String, $device_t
         uid
         provider
       }
-    }
     messages {
       message
       field
