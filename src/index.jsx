@@ -13,8 +13,6 @@ import theme from './styles/theme'
 const apolloClient = new Client().client
 const history = createHistory()
 
-console.log(`Apollo client is ${JSON.stringify(apolloClient)}`)
-
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <ApolloProvider client={apolloClient} >

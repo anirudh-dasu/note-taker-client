@@ -7,6 +7,4 @@ export const getDeviceType = () => {
   return name
 }
 
-export const getDeviceId = () => {
-  return uuid()
-}
+export const getDeviceId = () => uuid()

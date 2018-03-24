@@ -1,5 +1,5 @@
 import { createMuiTheme } from 'material-ui/styles'
-import red from 'material-ui/colors/red'
+import { red, black } from 'material-ui/colors/red'
 
 const theme = createMuiTheme({
   palette: {
@@ -15,7 +15,8 @@ const theme = createMuiTheme({
     error: red,
     contrastThreshold: 3,
     tonalOffset: 0.2
-  }
+  },
+  loading: black
 })
 
 export default theme
