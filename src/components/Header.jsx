@@ -33,7 +33,9 @@ const Header = (props) => {
     <div className={classes.root}>
       <AppBar position='static' color='default'>
         <Toolbar>
-          <Typography variant='title' color='inherit' >Notetaker</Typography>
+          <Link className={classes.link} to='/' href='/'>
+            <Typography variant='title' color='inherit' >Notetaker</Typography>
+          </Link>
           <Typography variant='subheading' color='inherit' className={[classes.flex, classes.margin].join(' ')}>A Graphql Client Demo</Typography>
           {
             user ? <Link className={classes.link} to='/' href='/'><Button color='inherit'>{user.username}</Button></Link> : <Link className={classes.link} to='/login' href='/login'><Button color='inherit'>Login</Button></Link>

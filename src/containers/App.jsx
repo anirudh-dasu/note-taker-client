@@ -5,14 +5,14 @@ import CssBaseline from 'material-ui/CssBaseline'
 import { graphql } from 'react-apollo'
 import PropType from 'prop-types'
 import Routes from './Routes'
-import userQuery from '../graphql/userQuery.graphql'
+import userQuery from '../graphql/queries/userQuery.graphql'
 
 const App = (props) => {
   const { data } = props
-  console.log(`Data is ${JSON.stringify(data)}`)
   return (
     <div>
       <CssBaseline />
+      {data.loading && <Routes />}
       {!data.loading && <Routes user={data.user} /> }
     </div>
   )

@@ -3,7 +3,7 @@
 
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
-import { compose, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import Typography from 'material-ui/Typography'
 import Grid from 'material-ui/Grid'
 import Paper from 'material-ui/Paper'
@@ -13,55 +13,10 @@ import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import classNames from 'classnames'
 import { withRouter } from 'react-router-dom'
-import signInMutation from '../graphql/signInMutation.graphql'
-import { getDeviceId, getDeviceType } from '../utils'
-import userQuery from '../graphql/userQuery.graphql'
+import signInMutation from '../../graphql/mutations/signInMutation.graphql'
+import { getDeviceId, getDeviceType } from '../../utils'
+import userQuery from '../../graphql/queries/userQuery.graphql'
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    width: '70%',
-    marginLeft: '15%'
-  },
-  margin: {
-    marginLeft: '25%',
-    marginRight: '25%',
-    marginTop: '20px'
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  },
-  textField: {
-    marginLeft: '15%',
-    marginRight: '15%',
-    width: '70%'
-  },
-  button: {
-    width: '100%',
-    height: '100%'
-  },
-  buttonProgress: {
-    color: theme.loading,
-    position: 'absolute',
-    left: '50%',
-    top: '5px'
-  },
-  wrapper: {
-    marginTop: '20px',
-    marginBottom: theme.spacing.unit,
-    width: '50%',
-    marginLeft: '25%',
-    marginRight: '25%',
-    position: 'relative',
-    textAlign: 'center'
-  }
-})
 
 class Login extends React.Component {
   constructor(props) {
@@ -73,13 +28,6 @@ class Login extends React.Component {
       error: false,
       errorMessage: 'Incorrect details provided',
       loading: false
-    }
-  }
-
-  componentDidMount() {
-    const { user, history } = this.props
-    if (user) {
-      history.push('/')
     }
   }
 
@@ -127,7 +75,7 @@ class Login extends React.Component {
     return (
       <div className={classes.root}>
         <Grid container spacing={24}>
-          <Grid item xs={6} className={classes.margin}>
+          <Grid item className={classes.margin}>
             <Paper className={classes.paper}>
               <Typography variant='title' color='inherit'>
                 Login
@@ -137,7 +85,6 @@ class Login extends React.Component {
                 onSubmit={this.handleSubmit()}
               >
                 <TextField
-                  id='email'
                   name='email'
                   label='Email'
                   type='email'
@@ -148,7 +95,6 @@ class Login extends React.Component {
                   autoComplete='current-email'
                 />
                 <TextField
-                  id='password'
                   name='password'
                   label='Password'
                   type='password'
@@ -195,38 +141,30 @@ class Login extends React.Component {
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
   signIn: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  user: PropTypes.object
+  history: PropTypes.object.isRequired
 }
 
-Login.defaultProps = { user: null }
-
-const LoginWithData = compose(
-  withRouter,
-  withStyles(styles),
-  graphql(signInMutation, {
-    props: ({ ownProps, mutate }) => ({
-      signIn: (email, password) =>
-        mutate({
-          variables: {
-            email,
-            password,
-            device_id: getDeviceId(),
-            device_type: getDeviceType()
-          },
-          update: (store, { data: { signIn: { user, userDevice } } }) => {
-            console.log(`Update triggered with current user - ${JSON.stringify(user)} and device - ${JSON.stringify(userDevice)}`)
-            if (user && userDevice) {
-              const data = store.readQuery({ query: userQuery })
-              data.user = user
-              data.user.userDevices = []
-              data.user.userDevices.push(userDevice)
-              store.writeQuery({ query: userQuery, data })
-            }
+const LoginWithData = graphql(signInMutation, {
+  props: ({ ownProps, mutate }) => ({
+    signIn: (email, password) =>
+      mutate({
+        variables: {
+          email,
+          password,
+          device_id: getDeviceId(),
+          device_type: getDeviceType()
+        },
+        update: (store, { data: { signIn: { user, userDevice } } }) => {
+          if (user && userDevice) {
+            const data = store.readQuery({ query: userQuery })
+            data.user = user
+            data.user.userDevices = []
+            data.user.userDevices.push(userDevice)
+            store.writeQuery({ query: userQuery, data })
           }
-        })
-    })
+        }
+      })
   })
-)(Login)
+})(Login)
 
 export default LoginWithData

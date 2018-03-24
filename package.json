@@ -22,7 +22,6 @@
     "graphql-tag": "^2.8.0",
     "history": "^4.7.2",
     "html-webpack-plugin": "2.29.0",
-    "loglevel": "^1.6.1",
     "material-ui": "^1.0.0-beta.38",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
