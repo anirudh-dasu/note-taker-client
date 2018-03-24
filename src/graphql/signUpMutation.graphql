@@ -1,20 +1,18 @@
-mutation signUn($email: String!, $password: String!, $password_confirmation: String! $device_id: String!, $device_type: String!, $provider: String, $uid: String) {
-  signIn(input: {sign_up:{ email: $email, password: $password, password_confirmation: $password_confirmation, device_id: $device_id, device_type: $device_type, provider: $provider, uid: $uid }}) {
+mutation signUp($email: String!, $password: String!, $password_confirmation: String!, $username: String! $device_id: String!, $device_type: String!, $provider: String, $uid: String) {
+  signUp(input: {sign_up:{ email: $email, username: $username, password: $password, password_confirmation: $password_confirmation, device_id: $device_id, device_type: $device_type, provider: $provider, uid: $uid }}) {
     user {
       id
       email
-      created_at
-      updated_at
       username
     }
-    user_device {
+    userDevice {
         id
-        device_id
-        device_type
+        deviceId
+        deviceType
         jwt
         uid
         provider
-      }
+    }
     messages {
       message
       field

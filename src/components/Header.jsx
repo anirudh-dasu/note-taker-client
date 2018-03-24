@@ -26,9 +26,8 @@ const styles = {
 
 
 const Header = (props) => {
-  const { classes } = props
+  const { classes, user } = props
 
-  // const logInLink = () => <Link to='/login' href='/login' />
 
   return (
     <div className={classes.root}>
@@ -36,7 +35,10 @@ const Header = (props) => {
         <Toolbar>
           <Typography variant='title' color='inherit' >Notetaker</Typography>
           <Typography variant='subheading' color='inherit' className={[classes.flex, classes.margin].join(' ')}>A Graphql Client Demo</Typography>
-          <Link className={classes.link} to='/login' href='/login'><Button color='inherit'>Login</Button></Link>
+          {
+            user ? <Link className={classes.link} to='/' href='/'><Button color='inherit'>{user.username}</Button></Link> : <Link className={classes.link} to='/login' href='/login'><Button color='inherit'>Login</Button></Link>
+          }
+
           <Button color='inherit'>Github</Button>
         </Toolbar>
       </AppBar>
@@ -45,9 +47,11 @@ const Header = (props) => {
 }
 
 Header.propTypes = {
-  classes: PropTypes.object.isRequired
-  // isLoggedIn: PropTypes.bool.isRequired
+  classes: PropTypes.object.isRequired,
+  user: PropTypes.object
 }
+
+Header.defaultProps = { user: null }
 
 
 export default withStyles(styles)(Header)

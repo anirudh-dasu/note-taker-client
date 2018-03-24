@@ -11,10 +11,11 @@ import { CircularProgress } from 'material-ui/Progress'
 import Button from 'material-ui/Button'
 import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
-import * as log from 'loglevel'
 import classNames from 'classnames'
+import { withRouter } from 'react-router-dom'
 import signInMutation from '../graphql/signInMutation.graphql'
 import { getDeviceId, getDeviceType } from '../utils'
+import userQuery from '../graphql/userQuery.graphql'
 
 const styles = theme => ({
   root: {
@@ -46,7 +47,7 @@ const styles = theme => ({
     height: '100%'
   },
   buttonProgress: {
-    color: `${theme.loading} !important`,
+    color: theme.loading,
     position: 'absolute',
     left: '50%',
     top: '5px'
@@ -66,9 +67,35 @@ class Login extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      email: '', password: ''
+      email: '',
+      password: '',
+      success: false,
+      error: false,
+      errorMessage: 'Incorrect details provided',
+      loading: false
     }
-    log.info(`Props are ${JSON.stringify(props)}`)
+  }
+
+  componentDidMount() {
+    const { user, history } = this.props
+    if (user) {
+      history.push('/')
+    }
+  }
+
+  handleResponse = (data) => {
+    if (!data.user || !data.userDevice) {
+      this.setState({
+        errorMessage: data.messages[0].message,
+        error: true,
+        success: false,
+        loading: false
+      })
+      return
+    }
+    localStorage.setItem('note-taker-token', data.userDevice.jwt)
+    const { history } = this.props
+    history.push('/')
   }
 
   handleChange = name => (event) => {
@@ -77,18 +104,25 @@ class Login extends React.Component {
 
   handleSubmit = () => (event) => {
     const { signIn } = this.props
+    this.setState({ success: false, error: false, loading: true })
     event.preventDefault()
     signIn(this.state.email, this.state.password)
       .then(({ data }) => {
-        onsole.log(`Data is ${JSON.stringify(data)}`)
-      }).catch((error) => {
-        console.log('there was an error sending the query', error);
+        this.handleResponse(data.signIn)
+      })
+      .catch((error) => {
+        this.setState({
+          error: true,
+          loading: false,
+          success: false,
+          errorMessage: error.message
+        })
       })
   }
 
   render() {
-    const { success } = this.state
-    const { loading, classes, error } = this.props
+    const { success, error, loading } = this.state
+    const { classes } = this.props
 
     return (
       <div className={classes.root}>
@@ -134,14 +168,21 @@ class Login extends React.Component {
                   >
                     Login
                   </Button>
-                  {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                  {loading && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
                 </div>
-                {
-                  !loading && error &&
-                  <div className={classes.wrapper}>
-                    <Typography color='error' variant='body1'>Incorrect details provided</Typography>
-                  </div>
-                }
+                {!loading &&
+                  error && (
+                    <div className={classes.wrapper}>
+                      <Typography color='error' variant='body1'>
+                        {this.state.errorMessage}
+                      </Typography>
+                    </div>
+                  )}
               </form>
             </Paper>
           </Grid>
@@ -152,27 +193,38 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  signIn: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  user: PropTypes.object
 }
 
+Login.defaultProps = { user: null }
+
 const LoginWithData = compose(
+  withRouter,
   withStyles(styles),
   graphql(signInMutation, {
     props: ({ ownProps, mutate }) => ({
-      signIn: (email, password) => mutate({
-        variables: {
-          email, password, device_id: getDeviceId(), device_type: getDeviceType()
-        },
-        update: (proxy, { data: { signIn: { user, user_devices, messages } } }) => {
-          console.log(`Update triggered with current user - ${JSON.stringify(user)}`)
-        },
-        onCompleted: (data) => {
-          console.log(`On complete trigerred with ${JSON.stringify(data)}`)
-        },
-        onError: (error) => {
-          console.log(`Error with ${JSON.stringify(error)}`)
-        }
-      })
+      signIn: (email, password) =>
+        mutate({
+          variables: {
+            email,
+            password,
+            device_id: getDeviceId(),
+            device_type: getDeviceType()
+          },
+          update: (store, { data: { signIn: { user, userDevice } } }) => {
+            console.log(`Update triggered with current user - ${JSON.stringify(user)} and device - ${JSON.stringify(userDevice)}`)
+            if (user && userDevice) {
+              const data = store.readQuery({ query: userQuery })
+              data.user = user
+              data.user.userDevices = []
+              data.user.userDevices.push(userDevice)
+              store.writeQuery({ query: userQuery, data })
+            }
+          }
+        })
     })
   })
 )(Login)

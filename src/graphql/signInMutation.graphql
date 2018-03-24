@@ -3,14 +3,12 @@ mutation signIn($email: String!, $password: String!, $device_id: String!, $devic
     user {
       id
       email
-      created_at
-      updated_at
       username
     }
-    user_device {
+    userDevice {
         id
-        device_id
-        device_type
+        deviceId
+        deviceType
         jwt
         uid
         provider

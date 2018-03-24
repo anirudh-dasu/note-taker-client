@@ -1,30 +1,27 @@
 /* eslint react/forbid-prop-types: 0 */
-/* eslint react/require-default-props: 0 */
 
 import React from 'react'
 import CssBaseline from 'material-ui/CssBaseline'
+import { graphql } from 'react-apollo'
+import PropType from 'prop-types'
 import Routes from './Routes'
+import userQuery from '../graphql/userQuery.graphql'
 
-class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { isLoggedIn: false }
-  }
-
-  componentDidMount() {
-    const token = localStorage.getItem('token')
-    const isLoggedIn = token !== null
-    this.state = { isLoggedIn }
-  }
-
-  render() {
-    return (
-      <div>
-        <CssBaseline />
-        <Routes isLoggedIn={this.state.isLoggedIn} />
-      </div>)
-  }
+const App = (props) => {
+  const { data } = props
+  console.log(`Data is ${JSON.stringify(data)}`)
+  return (
+    <div>
+      <CssBaseline />
+      {!data.loading && <Routes user={data.user} /> }
+    </div>
+  )
 }
 
+App.propTypes = {
+  data: PropType.object.isRequired
+}
 
-export default App
+const AppWithData = graphql(userQuery)(App)
+
+export default AppWithData
