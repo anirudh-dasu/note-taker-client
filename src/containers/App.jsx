@@ -2,26 +2,36 @@
 
 import React from 'react'
 import CssBaseline from 'material-ui/CssBaseline'
-import { graphql } from 'react-apollo'
+import { graphql, withApollo, compose } from 'react-apollo'
 import PropType from 'prop-types'
+import { getAndDecryptUser } from '../utils'
 import Routes from './Routes'
 import userQuery from '../graphql/queries/userQuery.graphql'
 
-const App = (props) => {
-  const { data } = props
-  return (
-    <div>
-      <CssBaseline />
-      {data.loading && <Routes />}
-      {!data.loading && <Routes user={data.user} /> }
-    </div>
-  )
+class App extends React.Component {
+  componentDidMount() {
+    const user = getAndDecryptUser()
+    if (user) {
+      this.props.client.writeQuery({ query: userQuery, data: user })
+    }
+  }
+
+  render() {
+    const { data } = this.props
+    return (
+      <div>
+        <CssBaseline />
+        {<Routes user={data.user} />}
+      </div>
+    )
+  }
 }
 
 App.propTypes = {
-  data: PropType.object.isRequired
+  data: PropType.object.isRequired,
+  client: PropType.object.isRequired
 }
 
-const AppWithData = graphql(userQuery)(App)
+const AppWithData = compose(graphql(userQuery), withApollo)(App)
 
 export default AppWithData

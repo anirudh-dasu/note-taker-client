@@ -1,1 +1,1 @@
-export { getDeviceType, getDeviceId } from './common'
+export { getDeviceType, getDeviceId, encryptAndStoreUser, getAndDecryptUser } from './common'

@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 import TextField from 'material-ui/TextField'
 import classNames from 'classnames'
 import signUpMutation from '../../graphql/mutations/signUpMutation.graphql'
-import { getDeviceId, getDeviceType } from '../../utils'
+import { getDeviceId, getDeviceType, encryptAndStoreUser } from '../../utils'
 import userQuery from '../../graphql/queries/userQuery.graphql'
 
 
@@ -43,6 +43,7 @@ class SignUp extends React.Component {
       return
     }
     localStorage.setItem('note-taker-token', data.userDevice.jwt)
+    encryptAndStoreUser(data)
     const { history } = this.props
     history.push('/')
   }

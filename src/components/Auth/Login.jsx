@@ -2,7 +2,6 @@
 /* eslint no-unused-vars:0 */
 
 import React from 'react'
-import { withStyles } from 'material-ui/styles'
 import { graphql } from 'react-apollo'
 import Typography from 'material-ui/Typography'
 import Grid from 'material-ui/Grid'
@@ -14,7 +13,7 @@ import TextField from 'material-ui/TextField'
 import classNames from 'classnames'
 import { withRouter } from 'react-router-dom'
 import signInMutation from '../../graphql/mutations/signInMutation.graphql'
-import { getDeviceId, getDeviceType } from '../../utils'
+import { getDeviceId, getDeviceType, encryptAndStoreUser } from '../../utils'
 import userQuery from '../../graphql/queries/userQuery.graphql'
 
 
@@ -36,12 +35,14 @@ class Login extends React.Component {
       this.setState({
         errorMessage: data.messages[0].message,
         error: true,
+        password: '',
         success: false,
         loading: false
       })
       return
     }
     localStorage.setItem('note-taker-token', data.userDevice.jwt)
+    encryptAndStoreUser(data)
     const { history } = this.props
     history.push('/')
   }

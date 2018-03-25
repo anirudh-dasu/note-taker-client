@@ -1,0 +1,15 @@
+query notes($offset: Integer, $keyword: String, $tag: String){
+  notes(offset: $offset, keyword: $keyword, tag: $tag){
+    notes{
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      tags {
+        id
+        title
+      }
+    }
+  }
+}
