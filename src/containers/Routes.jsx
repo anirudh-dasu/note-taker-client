@@ -1,19 +1,16 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import HomeContainer from './HomeContainer'
-import Header from '../components/Header'
+import Header from '../components/Common/Header'
 import AuthContainer from './AuthContainer'
 
 const Routes = props => (
   <div>
     <Header {...props} />
     <Switch>
-      <Route exact path='/' component={() => <HomeContainer {...props} />} />
+      <Route exact path='/' component={() => <HomeContainer />} />
       <Route path='/login' component={() => <AuthContainer {...props} />} />
     </Switch>
-  </div>
+  </div>)
 
-)
-
-
-export default Routes
+export default (Routes)

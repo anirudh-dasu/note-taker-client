@@ -3,44 +3,41 @@
 import React from 'react'
 import { withStyles } from 'material-ui/styles'
 import PropType from 'prop-types'
-import Typography from 'material-ui/Typography'
 import Paper from 'material-ui/Paper'
 import { compose } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import Notes from '../components/Notes'
 
-
 const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
-  parent: {
-    display: 'flex',
-    flexDirection: 'row',
-    flex: 'flex-grow'
-  },
-  notes: {
-    width: '70%',
-    float: 'left'
-  },
   paper: {
-    padding: theme.spacing.unit * 2,
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    marginTop: '30px'
+    width: 'calc(100% - 64px)',
+    margin: '32px',
+    height: 'calc(100% - 128px)'
+  },
+  mainContainer: {
+    color: '#fff'
+  },
+  scrollContainer: {
+    overflow: 'scroll'
+  },
+  notesContainer: {
+    width: '30%',
+    backgroundColor: 'inherit',
+    height: '1000px',
+    borderRight: '2px solid black'
   }
 })
 
 const HomeContainer = (props) => {
   const { classes } = props
   return (
-    <div className={classes.parent}>
-      <div className={classes.notes}>
-        <Paper className={classes.paper} >
-          <Notes {...props} />
-        </Paper>
+    <Paper className={classes.paper}>
+      <div className={classes.notesContainer}>
+        <Notes />
       </div>
-    </div>
+    </Paper>
   )
 }
 
@@ -49,4 +46,3 @@ HomeContainer.propTypes = {
 }
 
 export default compose(withRouter, withStyles(styles))(HomeContainer)
-

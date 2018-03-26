@@ -1,6 +1,5 @@
-query notes($offset: Integer, $keyword: String, $tag: String){
+query notes($offset: Int, $keyword: String, $tag: String){
   notes(offset: $offset, keyword: $keyword, tag: $tag){
-    notes{
       id
       title
       content
@@ -10,6 +9,5 @@ query notes($offset: Integer, $keyword: String, $tag: String){
         id
         title
       }
-    }
   }
 }

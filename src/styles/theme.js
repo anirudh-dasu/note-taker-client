@@ -16,7 +16,10 @@ const theme = createMuiTheme({
     contrastThreshold: 3,
     tonalOffset: 0.2
   },
-  loading: black
+  loading: black,
+  typography: {
+    fontFamily: 'Lato'
+  }
 })
 
 export default theme
