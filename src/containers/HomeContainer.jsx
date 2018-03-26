@@ -30,15 +30,22 @@ const styles = theme => ({
   }
 })
 
-const HomeContainer = (props) => {
-  const { classes } = props
-  return (
-    <Paper className={classes.paper}>
-      <div className={classes.notesContainer}>
-        <Notes />
-      </div>
-    </Paper>
-  )
+class HomeContainer extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { tag: '', offset: 0, keyword: 'test' }
+  }
+
+  render() {
+    const { classes } = this.props
+    return (
+      <Paper className={classes.paper}>
+        <div className={classes.notesContainer}>
+          <Notes tag={this.state.tag} offset={this.state.offset} keyword={this.state.keyword} />
+        </div>
+      </Paper>
+    )
+  }
 }
 
 HomeContainer.propTypes = {
