@@ -26,7 +26,7 @@ const styles = theme => ({
     width: '30%',
     backgroundColor: 'inherit',
     height: '1000px',
-    borderRight: '2px solid black'
+    borderRight: `1px solid ${theme.palette.text.secondary}`
   }
 })
 
@@ -41,7 +41,11 @@ class HomeContainer extends React.Component {
     return (
       <Paper className={classes.paper}>
         <div className={classes.notesContainer}>
-          <Notes tag={this.state.tag} offset={this.state.offset} keyword={this.state.keyword} />
+          <Notes
+            tag={this.state.tag}
+            offset={this.state.offset}
+            keyword={this.state.keyword}
+          />
         </div>
       </Paper>
     )

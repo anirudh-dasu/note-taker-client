@@ -8,7 +8,7 @@ import { setContext } from 'apollo-link-context'
 export default class Client {
   constructor() {
     const link = new BatchHttpLink({
-      uri: 'http://localhost:4000/graphql',
+      uri: 'http://note-taker-api.herokuapp.com/graphql',
       batchMax: 5,
       batchInterval: 5
     })
